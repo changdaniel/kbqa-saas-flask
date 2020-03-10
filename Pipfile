@@ -9,6 +9,14 @@ verify_ssl = true
 flask = "*"
 flask-cors = "*"
 flaskpusher = "*"
+numpy = "*"
+torch = "*"
+yaml = "*"
+pyyaml = "*"
+nltk = "*"
+fuzzywuzzy = "*"
+scipy = "*"
+gensim = "*"
 
 [requires]
 python_version = "3.6"

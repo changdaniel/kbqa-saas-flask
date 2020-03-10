@@ -170,7 +170,7 @@ if __name__ == "__main__":
     new_entityType = entityType2id_generator.generate_entityType2id(data)
     print('EntityType2id generated')
 
-    dir_name = 'data'
+    dir_name = './question-answering/data'
     if not os.path.exists(dir_name):
         os.mkdir(dir_name)
 

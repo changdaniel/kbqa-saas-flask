@@ -3,10 +3,10 @@ from flask_cors import CORS
 from flask_pusher import Pusher
 from werkzeug.utils import secure_filename
 from contextlib import redirect_stdout
+from time import sleep
 
 import subprocess
 import os
-
 
 
 app_id = "960906"
@@ -25,20 +25,37 @@ UPLOAD_FOLDER = './data_upload'
 ALLOWED_EXTENSIONS = {'json'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+def write_to_pusher(message):
+    
+    if isinstance(message, bytes):
+        message = message.decode('utf-8')
+    
+    messages = message.split('\n')
+    for message in messages:
+        sleep(.3)
+        pusher.trigger('pipeline', 'progress', {'message': message})
 
 def build_data(data_file_path):
     
-    subprocess.run(['python3', './data-parsing/data_util.py', data_file_path])
+    messages = subprocess.check_output(['python3', './data-parsing/data_util.py', data_file_path])
+    write_to_pusher(messages)
 
+def train_model(data_folder_path = "./"):
 
-# def train_model(data_folder_path = "./"):
+    messages = subprocess.check_output(['python3', 'question_answering/run_all.py', data_file_path])
 
-#     subprocess.run(['python3', 'question_answering/run_all.py', data_file_path])
+def save_raw_data(file):
 
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(file_path)
+
+    write_to_pusher("{} saved".format(filename))
+
+    return file_path
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-
     def allowed_file(filename):
         return '.' in filename and \
             filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -51,14 +68,12 @@ def upload_file():
     file = request.files['file']
  
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
 
-        pusher.trigger('pipeline', 'progress', {'message':'File uploaded'}) # trigger `some-event` event on `progress` channel
-
-
+        file_path = save_raw_data(file)
         build_data(file_path)
+
+
+
         print('File uploaded')
         return 'File uploaded'
 
