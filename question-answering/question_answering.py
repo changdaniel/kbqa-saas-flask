@@ -9,7 +9,7 @@ from core.build_data.utils import vectorize_data
 
 # --------- Load Knowledge Base, Existing Model, ID Mappings ------------
 
-def load_data(cfg = 'config/bamnet_webq.yml'):
+def load_data(cfg = 'question-answering/config/bamnet_webq.yml'):
     """
     Description: Load config settings, knowledge base, and ID mappings into memory
     Parameters: (String) Path to configuration file
@@ -19,7 +19,8 @@ def load_data(cfg = 'config/bamnet_webq.yml'):
     data = {}
     
     # Fetch BAMnet configuration settings 
-    data['opt'] = get_config(cfg)
+    with open(cfg, "r") as setting:
+        data['opt']  = yaml.load(setting)
     
     # Load token mappings
     data['entity2id'] = load_json(os.path.join(data['opt']['data_dir'], 'entity2id.json'))

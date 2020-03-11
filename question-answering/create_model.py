@@ -10,27 +10,34 @@ import timeit
 import numpy as np
 
 
-def update_config(config_path="config/bamnet_webq.yml"):
+def update_config(config_path='question-answering/config/bamnet_webq.yml', new_data_dir=None):
     """
     Description: Update the config template file with the desired data directory
     Parameters: (String, String) Relative paths to data directory and config file
     """
 
-    data = qa.load_data(config_path)
+    with open(config_path, "r") as setting:
+        new_config = yaml.load(setting)
 
-    new_config = data['opt']
+    data_dir = new_config['data_dir']
+
+    entityType2id = load_json(os.path.join(data_dir, 'entityType2id.json'))
+    relation2id = load_json(os.path.join(data_dir, 'relation2id.json'))
+    vocab2id = load_json(os.path.join(data_dir, 'vocab2id.json'))
     
-    new_config['vocab_size'] = len(data['vocab2id'])
-    new_config['num_ent_types'] = len(data['entityType2id'])
-    new_config['num_relations'] = len(data['relation2id'])
+    new_config['vocab_size'] = len(vocab2id)
+    new_config['num_ent_types'] = len(entityType2id)
+    new_config['num_relations'] = len(relation2id)
 
+    if new_data_dir:
+        new_config['data_dir'] = new_data_dir
 
     with open(config_path, 'w') as outfile:
        yaml.dump(new_config, outfile, default_style='double-quoted')
 
 
 
-def generate_embeddings(config_path="config/bamnet_webq.yml", glove="glove.840B.300d.w2v"):
+def generate_embeddings(config_path='question-answering/config/bamnet_webq.yml', glove="glove.840B.300d.w2v"):
     """
     Description: Generate GLOVE word embedding vectors for the vocabulary
     Parameters: (String, String) Relative paths to config file and glove model
@@ -48,7 +55,7 @@ def generate_embeddings(config_path="config/bamnet_webq.yml", glove="glove.840B.
     dump_embeddings(vocab_dict, glove, out_path, emb_size=emb_size, binary=False)
 
 
-def build_training_data(config_path="config/bamnet_webq.yml"):
+def build_training_data(config_path='question-answering/config/bamnet_webq.yml'):
     """
     Description: Create train/valid/test questions into vectors for BAMnet training
     Parameters: (String) Relative path to config file
@@ -80,10 +87,9 @@ def build_training_data(config_path="config/bamnet_webq.yml"):
     dump_json(valid_vec, os.path.join(data_dir, 'valid_vec.json'))
     dump_json(test_vec, os.path.join(data_dir, 'test_vec.json'))
 
-    build_utils.mark_done(args.out_dir)
 
 
-def train_model(config_path="config/bamnet_webq.yml"):
+def train_model(config_path='question-answering/config/bamnet_webq.yml'):
     """
     Description: Train a BAMnet model with knowledge base and questions in /data
     Parameters: (String) Relative path to config file
