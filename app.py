@@ -7,7 +7,10 @@ from time import sleep
 
 import subprocess
 import os
+import sys  
 
+sys.path.append('/Users/andrewacomb/Desktop/School/Current_Classes/COMP_SCI_496/repo/kbqa-saas-flask/question-answering')  
+from question_answering import answer_question
 
 app_id = "960906"
 key = "d18ed2e42cf337876806"
@@ -40,9 +43,38 @@ def build_data(data_file_path):
     messages = subprocess.check_output(['python3', './data-parsing/data_util.py', data_file_path])
     write_to_pusher(messages)
 
-def train_model(data_folder_path = "./"):
+def execute(cmd):
+    popen = subprocess.Popen(cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line 
+    popen.stdout.close()
+    return_code = popen.wait()
+    if return_code:
+        raise subprocess.CalledProcessError(return_code, cmd)
 
-    messages = subprocess.check_output(['python3', 'question_answering/run_all.py', data_file_path])
+
+def train_model():
+
+    for message in execute(['python3', './question-answering/run_all.py', 'update_config']):
+        print(message)
+        write_to_pusher(message)
+
+    for message in execute(['python3', './question-answering/run_all.py', 'train_model']):
+        print(message)
+        write_to_pusher(message)
+
+
+# def train_model():
+
+#     messages = subprocess.check_output(['python3', './question-answering/run_all.py', 'update_config'])
+#     write_to_pusher(messages)
+#     # messages = subprocess.check_output(['python3', './question-answering/run_all.py', 'generate_embeddings'], stderr=subprocess.STDOUT)
+#     # write_to_pusher(messages)
+#     # messages = subprocess.check_output(['python3', './question-answering/run_all.py', 'build_training_data'], stderr=subprocess.STDOUT)
+#     # write_to_pusher(messages)
+#     messages = subprocess.check_output(['python3', './question-answering/run_all.py', 'train_model'])
+#     write_to_pusher(messages)
+
 
 def save_raw_data(file):
 
@@ -71,11 +103,24 @@ def upload_file():
 
         file_path = save_raw_data(file)
         build_data(file_path)
+        train_model()
 
-
+        write_to_pusher("API endpoint: http://127.0.0.1:5000/answer")
 
         print('File uploaded')
         return 'File uploaded'
 
     print('Reach end error')
     return 'Reach end error'
+    
+@app.route('/answer', methods=['GET'])
+def answer_question():
+    #Ex: http://127.0.0.1:5000/answer?question=what_is_the_revenue_of_$aapl_?
+    question = request.args.get('question').replace("_", " ")
+
+    return answer_question(question)
+
+
+
+
+
