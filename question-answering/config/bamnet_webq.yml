@@ -4,28 +4,12 @@
 "ans_path_bow_size": !!null "null"
 "attention": "add"
 "batch_size": !!int "32"
-<<<<<<< HEAD
 "data_dir": "question-answering/data"
-=======
-"data_dir": "./data/"
->>>>>>> 3dc1a5163dc91c369bf33f745964690eff0147b6
 "gpu": !!int "0"
 "hidden_size": !!int "128"
 "learning_rate": !!float "0.001"
 "margin": !!int "1"
 "mem_size": !!int "96"
-<<<<<<< HEAD
-"model_file": "question-answering/models/bamnet.md"
-"name": "WebQuestions"
-"no_cuda": !!bool "false"
-"num_ent_types": !!int "119"
-"num_epochs": !!int "0"
-"num_hops": !!int "1"
-"num_query_words": !!int "10"
-"num_relations": !!int "119"
-"o_embed_size": !!int "128"
-"pre_word2vec": "question-answering/data/glove_pretrained_300d_w2v.npy"
-=======
 "model_file": "./models/bamnet.md"
 "name": "WebQuestions"
 "no_cuda": !!bool "false"
@@ -36,7 +20,6 @@
 "num_relations": !!int "46"
 "o_embed_size": !!int "128"
 "pre_word2vec": "./data/glove_pretrained_300d_w2v.npy"
->>>>>>> 3dc1a5163dc91c369bf33f745964690eff0147b6
 "que_enc_dropout": !!float "0.3"
 "query_markup_size": !!int "1"
 "query_size": !!int "32"
@@ -48,9 +31,5 @@
 "valid_data": "valid_vec.json"
 "valid_patience": !!int "10"
 "vocab_embed_size": !!int "300"
-<<<<<<< HEAD
-"vocab_size": !!int "101132"
-=======
 "vocab_size": !!int "101139"
->>>>>>> 3dc1a5163dc91c369bf33f745964690eff0147b6
 "word_emb_dropout": !!float "0.3"

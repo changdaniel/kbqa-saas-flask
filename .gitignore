@@ -1,8 +1,7 @@
 __pycache__
-question-answering/data/glove_pretrained_300d_w2v.npy
 question-answering/model/bamnet.md
 question-anwering/glove.840B.300d.w2v
-question-answering/data/.DS_Store
+question-answering/data/*
 *.w2v
 *.md
 *.npy

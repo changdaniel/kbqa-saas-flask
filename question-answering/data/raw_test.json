@@ -1,2 +1,0 @@
-{"answers": ["28.49"], "entities": [["MSFT", "ORGANIZATIONS"]], "qText": "What is the PE Ratio (Forward) of $MSFT?", "qId": "42", "freebaseKey": "MSFT", "freebaseKeyCands": ["MSFT"], "dep_path": []}
-{"answers": ["0.51"], "entities": [["MSFT", "ORGANIZATIONS"]], "qText": "What is the Dividend of $MSFT?", "qId": "24", "freebaseKey": "MSFT", "freebaseKeyCands": ["MSFT"], "dep_path": []}

@@ -7,9 +7,9 @@ if __name__ == "__main__":
     if argv[1] == "update_config":
         update_config('question-answering/config/bamnet_webq.yml', 'question-answering/data')
         print("Config updated")
-    # if argv[1] == "generate_embeddings":
-    #     generate_embeddings('question-answering/config/bamnet_webq.yml','question-answering/glove.840B.300d.w2v')
-    #     print("Embeddings generated")
+    if argv[1] == "generate_embeddings":
+        generate_embeddings('question-answering/config/bamnet_webq.yml','question-answering/glove.840B.300d.w2v')
+        print("Embeddings generated")
     if argv[1] == "build_training_data":
         build_training_data('question-answering/config/bamnet_webq.yml')
         print("Training data built")
