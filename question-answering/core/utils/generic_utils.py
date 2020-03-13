@@ -87,6 +87,8 @@ def dump_embeddings(vocab_dict, emb_file, out_path, emb_size=300, binary=False, 
 
 def get_embeddings(emb_file, vocab, binary=False):
     pt = PreTrainEmbedding(emb_file, binary)
+
+
     vocab_embs = {}
 
     i = 0.
