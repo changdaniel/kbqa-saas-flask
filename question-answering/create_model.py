@@ -10,7 +10,7 @@ import timeit
 import numpy as np
 
 
-def update_config(config_path='question-answering/config/bamnet_webq.yml', new_data_dir=None):
+def update_config(config_path='question-answering/config/bamnet_webq.yml', new_data_dir=None, new_model=None):
     """
     Description: Update the config template file with the desired data directory
     Parameters: (String, String) Relative paths to data directory and config file
@@ -31,13 +31,17 @@ def update_config(config_path='question-answering/config/bamnet_webq.yml', new_d
 
     if new_data_dir:
         new_config['data_dir'] = new_data_dir
+        new_config['pre_word2vec'] = new_data_dir + '/glove_pretrained_300d_w2v.npy'
+
+    if new_model:
+        new_config['model_file'] = new_model
 
     with open(config_path, 'w') as outfile:
        yaml.dump(new_config, outfile, default_style='double-quoted')
 
 
 
-def generate_embeddings(config_path='question-answering/config/bamnet_webq.yml', glove="glove.840B.300d.w2v"):
+def generate_embeddings(config_path='question-answering/config/bamnet_webq.yml', glove="question-answering/glove.840B.300d.w2v"):
     """
     Description: Generate GLOVE word embedding vectors for the vocabulary
     Parameters: (String, String) Relative paths to config file and glove model
@@ -46,11 +50,13 @@ def generate_embeddings(config_path='question-answering/config/bamnet_webq.yml',
     with open(config_path, "r") as setting:
         config = yaml.load(setting)
     
+
     data_dir = config['data_dir']
     emb_size = config['vocab_embed_size']
     vocab_dict = load_json(os.path.join(data_dir, 'vocab2id.json'))
 
     out_path = config['pre_word2vec']
+
 
     dump_embeddings(vocab_dict, glove, out_path, emb_size=emb_size, binary=False)
 
@@ -70,7 +76,8 @@ def build_training_data(config_path='question-answering/config/bamnet_webq.yml')
     # Load in training data
     train_data = load_ndjson(os.path.join(data_dir, 'raw_train.json'))
     valid_data = load_ndjson(os.path.join(data_dir, 'raw_valid.json'))
-    test_data = load_ndjson(os.path.join(data_dir, 'raw_test.json'))
+    test_data = valid_data[:(len(valid_data)//3)]
+
     freebase = load_ndjson(os.path.join(data_dir, 'freebase_full.json'), return_type='dict')
 
     # Load in ID mappings

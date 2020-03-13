@@ -1,6 +1,7 @@
 import sys
 import os
 import string
+import yaml
 from core.bamnet.bamnet import BAMnetAgent
 from core.utils.utils import get_config, load_json, load_ndjson
 from core.build_data.build_data import build_vocab, build_data, build_seed_ent_data, build_ans_cands
@@ -146,5 +147,5 @@ def answer_question_quick(q, model, data):
     inputs, possible_answers = parse_query(q, data)
     answer = model.predict(inputs, possible_answers)
 
-    return(answer[0][0][0])
+    return(answer[0][0])
 
