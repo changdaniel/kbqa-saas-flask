@@ -9,7 +9,7 @@ import subprocess
 import os
 import sys  
 
-sys.path.append('/Users/andrewacomb/Desktop/School/Current_Classes/COMP_SCI_496/repo/kbqa-saas-flask/question-answering')  
+sys.path.append('./question-answering')  
 from question_answering import answer_question
 
 app_id = "960906"
